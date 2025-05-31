@@ -1,13 +1,15 @@
 import { useAtom } from 'jotai';
+
 import { useCallback } from 'react';
+
 import { fetchProfessionalsClient } from '@/lib/api';
 import {
   professionalsArrayAtom,
-  professionalsLoadingAtom,
   professionalsErrorAtom,
-  setProfessionalsAtom,
-  setLoadingAtom,
+  professionalsLoadingAtom,
   setErrorAtom,
+  setLoadingAtom,
+  setProfessionalsAtom,
 } from '@/lib/store';
 
 export function useProfessionals() {
@@ -42,4 +44,4 @@ export function useProfessionals() {
     error,
     loadProfessionals,
   };
-} 
+}

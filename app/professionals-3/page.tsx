@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+
 import { ProfessionalsTable } from '@/components/professionals-table';
 import { useProfessionals } from '@/lib/hooks/use-professionals';
 
@@ -20,4 +21,4 @@ export default function Professionals3() {
   }
 
   return <ProfessionalsTable professionals={professionals} />;
-} 
+}

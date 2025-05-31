@@ -1,6 +1,6 @@
 'use client';
 
-import type { Professional } from '@/lib/types';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Table,
   TableBody,
@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import type { Professional } from '@/lib/types';
 
 interface ProfessionalsTableProps {
   professionals: Professional[];
@@ -31,20 +31,20 @@ export function ProfessionalsTable({ professionals }: ProfessionalsTableProps) {
 
   const formatServices = (services: Professional['services']): string => {
     if (!services || services.length === 0) return 'No services';
-    
+
     const firstService = services[0].name;
     const additionalCount = services.length - 1;
-    
+
     if (additionalCount === 0) {
       return firstService;
     }
-    
+
     return `${firstService} +${additionalCount}`;
   };
 
   return (
     <div className="w-full overflow-auto">
-      <div className="rounded-md border min-w-[800px]">
+      <div className="min-w-[800px] rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -72,7 +72,7 @@ export function ProfessionalsTable({ professionals }: ProfessionalsTableProps) {
                 <TableCell>{professional.phoneNumber}</TableCell>
                 <TableCell>{formatExperience(professional.yearsOfExperience)}</TableCell>
                 <TableCell>
-                  <div className="text-sm bg-gray-100 px-2 py-1 rounded inline-block">
+                  <div className="inline-block rounded bg-gray-100 px-2 py-1 text-sm">
                     {formatServices(professional.services)}
                   </div>
                 </TableCell>
@@ -83,4 +83,4 @@ export function ProfessionalsTable({ professionals }: ProfessionalsTableProps) {
       </div>
     </div>
   );
-} 
+}

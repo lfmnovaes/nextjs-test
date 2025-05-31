@@ -1,27 +1,20 @@
 import { ResultAsync, fromPromise } from 'neverthrow';
+
 import type { ProfessionalsResponse } from '@/lib/types';
 import { ProfessionalsResponseSchema as Schema } from '@/lib/types';
 
 // Constants
 const BASE_URL = 'https://mcf-api-services-dev.onrender.com/api/v1';
-const COMPANY_ID = '992e792c-f1f3-4a75-a286-fcead055026c';
+const COMPANY_ID = 'bd56d036-bd66-46eb-a970-c65e615da5d0';
+const REVALIDATE_SECONDS = 300; // 5 minutes
 
-export function fetchProfessionals(bearerToken?: string): ResultAsync<ProfessionalsResponse, Error> {
-  // Get token from parameter first, then from environment
-  const token = bearerToken || process.env.BEARER_TOKEN;
-  
-  if (!token) {
-    console.error('Bearer token not found');
-    return ResultAsync.fromSafePromise(
-      Promise.reject(new Error('Bearer token not found'))
-    );
-  }
-
+// Helper function to handle fetch requests
+function createFetchRequest(url: string, token: string) {
   return fromPromise(
-    fetch(`${BASE_URL}/enterprise/professionals?companyId=${COMPANY_ID}`, {
+    fetch(url, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     }),
@@ -29,51 +22,97 @@ export function fetchProfessionals(bearerToken?: string): ResultAsync<Profession
       console.error('Network error:', error);
       return new Error(`Network error: ${error}`);
     }
-  )
+  );
+}
+
+// Helper function to handle response processing
+function processResponse(response: Response) {
+  if (!response.ok) {
+    console.error(`HTTP error! status: ${response.status}`);
+    return ResultAsync.fromSafePromise(
+      Promise.reject(new Error(`HTTP error! status: ${response.status}`))
+    );
+  }
+  return fromPromise(response.json(), (error) => {
+    console.error('Failed to parse JSON:', error);
+    return new Error(`Failed to parse JSON: ${error}`);
+  });
+}
+
+// Helper function to validate data with method context
+function validateData(data: unknown, method: string = 'unknown') {
+  // Enhanced debug log with method context - only in development
+  if (process.env.NODE_ENV === 'development') {
+    const apiData = data as { statusCode?: number; data?: unknown[] };
+    console.info(
+      `[${method}] API Response: ${apiData.statusCode} | Items: ${apiData.data?.length || 0}`
+    );
+  }
+
+  const validationResult = Schema.safeParse(data);
+
+  if (!validationResult.success) {
+    console.error(`[${method}] Data validation failed:`, validationResult.error.issues);
+    return ResultAsync.fromSafePromise(
+      Promise.reject(new Error('Data validation failed. Check console for details.'))
+    );
+  }
+
+  return ResultAsync.fromSafePromise(Promise.resolve(validationResult.data));
+}
+
+export function fetchProfessionals(
+  bearerToken?: string
+): ResultAsync<ProfessionalsResponse, Error> {
+  // Get token from parameter first, then from environment
+  const token = bearerToken || process.env.BEARER_TOKEN;
+
+  if (!token) {
+    console.error('[fetchProfessionals] Bearer token not found');
+    return ResultAsync.fromSafePromise(Promise.reject(new Error('Bearer token not found')));
+  }
+
+  return createFetchRequest(`${BASE_URL}/enterprise/professionals?companyId=${COMPANY_ID}`, token)
+    .andThen(processResponse)
+    .andThen((data) => validateData(data, 'fetchProfessionals'));
+}
+
+// Cached version with configurable revalidation time
+export function fetchProfessionalsCached(
+  bearerToken?: string,
+  revalidateSeconds: number = REVALIDATE_SECONDS // 5 minutes default
+): ResultAsync<ProfessionalsResponse, Error> {
+  const token = bearerToken || process.env.BEARER_TOKEN;
+
+  if (!token) {
+    console.error('[fetchProfessionalsCached] Bearer token not found');
+    return ResultAsync.fromSafePromise(Promise.reject(new Error('Bearer token not found')));
+  }
+
+  return createFetchRequest(`${BASE_URL}/enterprise/professionals?companyId=${COMPANY_ID}`, token)
     .andThen((response) => {
-      if (!response.ok) {
-        console.error(`HTTP error! status: ${response.status}`);
-        return ResultAsync.fromSafePromise(
-          Promise.reject(new Error(`HTTP error! status: ${response.status}`))
+      // Add cache headers for Next.js
+      if (typeof window === 'undefined') {
+        // Server-side: use Next.js cache
+        return fromPromise(
+          fetch(`${BASE_URL}/enterprise/professionals?companyId=${COMPANY_ID}`, {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            next: { revalidate: revalidateSeconds },
+          }),
+          (error) => {
+            console.error('[fetchProfessionalsCached] Network error:', error);
+            return new Error(`Network error: ${error}`);
+          }
         );
       }
-      return fromPromise(
-        response.json(),
-        (error) => {
-          console.error('Failed to parse JSON:', error);
-          return new Error(`Failed to parse JSON: ${error}`);
-        }
-      );
+      return ResultAsync.fromSafePromise(Promise.resolve(response));
     })
-    .andThen((data) => {
-      // Log the raw data for debugging (only in development)
-      if (process.env.NODE_ENV === 'development') {
-        console.log('API Response sample:', {
-          statusCode: data.statusCode,
-          message: data.message,
-          dataLength: data.data?.length,
-          firstItem: data.data?.[0] ? {
-            id: data.data[0].id,
-            name: data.data[0].name,
-            yearsOfExperience: data.data[0].yearsOfExperience,
-            yearsOfExperienceType: typeof data.data[0].yearsOfExperience
-          } : null
-        });
-      }
-
-      const validationResult = Schema.safeParse(data);
-      
-      if (!validationResult.success) {
-        // Only log validation errors, don't crash the app
-        console.error('Data validation failed:', validationResult.error.issues);
-        console.error('Raw data sample:', data?.data?.[0]);
-        return ResultAsync.fromSafePromise(
-          Promise.reject(new Error('Data validation failed. Check console for details.'))
-        );
-      }
-
-      return ResultAsync.fromSafePromise(Promise.resolve(validationResult.data));
-    });
+    .andThen(processResponse)
+    .andThen((data) => validateData(data, 'fetchProfessionalsCached'));
 }
 
 // Client-side API function that uses a route handler
@@ -86,36 +125,10 @@ export function fetchProfessionalsClient(): ResultAsync<ProfessionalsResponse, E
       },
     }),
     (error) => {
-      console.error('Client network error:', error);
+      console.error('[fetchProfessionalsClient] Client network error:', error);
       return new Error(`Network error: ${error}`);
     }
   )
-    .andThen((response) => {
-      if (!response.ok) {
-        console.error(`Client HTTP error! status: ${response.status}`);
-        return ResultAsync.fromSafePromise(
-          Promise.reject(new Error(`HTTP error! status: ${response.status}`))
-        );
-      }
-      return fromPromise(
-        response.json(),
-        (error) => {
-          console.error('Client failed to parse JSON:', error);
-          return new Error(`Failed to parse JSON: ${error}`);
-        }
-      );
-    })
-    .andThen((data) => {
-      const validationResult = Schema.safeParse(data);
-      
-      if (!validationResult.success) {
-        // Only log validation errors, don't crash the app
-        console.error('Client validation failed:', validationResult.error.issues);
-        return ResultAsync.fromSafePromise(
-          Promise.reject(new Error('Data validation failed. Check console for details.'))
-        );
-      }
-
-      return ResultAsync.fromSafePromise(Promise.resolve(validationResult.data));
-    });
-} 
+    .andThen(processResponse)
+    .andThen((data) => validateData(data, 'fetchProfessionalsClient'));
+}

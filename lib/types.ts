@@ -1,12 +1,10 @@
 import { z } from 'zod';
 
 // Helper function to safely convert string/number to number
-const safeNumber = z
-  .union([z.string(), z.number()])
-  .transform((val) => {
-    const num = typeof val === 'string' ? parseFloat(val) : val;
-    return isNaN(num) ? 0 : num;
-  });
+const safeNumber = z.union([z.string(), z.number()]).transform((val) => {
+  const num = typeof val === 'string' ? parseFloat(val) : val;
+  return isNaN(num) ? 0 : num;
+});
 
 // Helper function to safely convert string/number to nullable number
 const safeNullableNumber = z
@@ -60,8 +58,8 @@ export type Professional = z.infer<typeof professionalSchema>;
 export type ProfessionalsResponse = z.infer<typeof professionalsResponseSchema>;
 
 // Export schemas for validation
-export { 
-  serviceSchema as ServiceSchema, 
-  professionalSchema as ProfessionalSchema, 
-  professionalsResponseSchema as ProfessionalsResponseSchema 
-}; 
+export {
+  serviceSchema as ServiceSchema,
+  professionalSchema as ProfessionalSchema,
+  professionalsResponseSchema as ProfessionalsResponseSchema,
+};

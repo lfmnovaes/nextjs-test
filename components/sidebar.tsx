@@ -2,8 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Button } from './ui/button';
+
 import { cn } from '@/lib/utils';
+
+import { Button } from './ui/button';
 
 const navigationItems = [
   { href: '/', label: 'Main Page' },
@@ -16,9 +18,9 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="w-64 min-w-48 max-w-64 bg-gray-50 border-r border-gray-200 h-screen p-4 flex-shrink-0">
+    <div className="h-screen w-64 max-w-64 min-w-48 flex-shrink-0 border-r border-gray-200 bg-gray-50 p-4">
       <div className="space-y-2">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Navigation</h2>
+        <h2 className="mb-4 text-lg font-semibold text-gray-900">Navigation</h2>
         {navigationItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -38,4 +40,4 @@ export function Sidebar() {
       </div>
     </div>
   );
-} 
+}

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+
 import { fetchProfessionals } from '@/lib/api';
 
 export async function GET() {
@@ -6,9 +7,10 @@ export async function GET() {
 
   return result.match(
     (data) => NextResponse.json(data),
-    (error) => NextResponse.json(
-      { error: error.message },
-      { status: error.message.includes('Bearer token') ? 401 : 500 }
-    )
+    (error) =>
+      NextResponse.json(
+        { error: error.message },
+        { status: error.message.includes('Bearer token') ? 401 : 500 }
+      )
   );
-} 
+}

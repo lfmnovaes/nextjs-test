@@ -1,15 +1,16 @@
 import { ProfessionalsTable } from '@/components/professionals-table';
-import { fetchProfessionals } from '@/lib/api';
+import { fetchProfessionalsCached } from '@/lib/api';
 
-// This page uses Static Site Generation (SSG)
-// Data is fetched at build time and reused for each request
-export const revalidate = 3600; // Revalidate every hour
+// This page uses Static Site Generation (SSG) with caching
+// Data is fetched with a 5-minute cache revalidation
+export const revalidate = 300; // 5 minutes
 
 export default async function Professionals2() {
-  const result = await fetchProfessionals();
-  
+  // Using cached version with 5-minute revalidation
+  const result = await fetchProfessionalsCached(undefined, 300);
+
   return result.match(
     (data) => <ProfessionalsTable professionals={data.data} />,
     (error) => <div className="text-lg text-red-600">Error: {error.message}</div>
   );
-} 
+}
