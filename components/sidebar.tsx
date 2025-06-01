@@ -9,9 +9,11 @@ import { Button } from './ui/button';
 
 const navigationItems = [
   { href: '/', label: 'Main Page' },
-  { href: '/professionals-1', label: 'Professionals Page 1' },
-  { href: '/professionals-2', label: 'Professionals Page 2' },
-  { href: '/professionals-3', label: 'Professionals Page 3' },
+  { href: '/professionals-1', label: 'Professionals Page 1 (SSR)' },
+  { href: '/professionals-2', label: 'Professionals Page 2 (ISR)' },
+  { href: '/professionals-3', label: 'Professionals Page 3 (CSR)' },
+  { href: '/professionals-4', label: 'Professionals Page 4 (PPR)' },
+  { href: '/professionals-5', label: 'Professionals Page 5 (Activity)' },
 ];
 
 export function Sidebar() {

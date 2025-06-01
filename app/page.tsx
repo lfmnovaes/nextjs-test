@@ -1,29 +1,145 @@
 export default function Home() {
   return (
-    <div className="p-8">
+    <div className="h-full overflow-y-auto p-8">
       <div className="mx-auto max-w-4xl">
-        <h1 className="mb-8 text-center text-4xl font-bold">Welcome to Professionals Management</h1>
-        <div className="space-y-4 text-center">
-          <p className="text-lg text-gray-600">
-            This is the main page of the Professionals Management application.
+        <h1 className="mb-8 text-center text-4xl font-bold text-gray-900">
+          Next.js Rendering Patterns Demo
+        </h1>
+
+        <div className="mb-8 text-center">
+          <p className="mb-4 text-lg text-gray-600">
+            This application demonstrates 5 different Next.js rendering patterns using a
+            professionals management system.
           </p>
           <p className="text-md text-gray-500">
-            Use the sidebar on the left to navigate to different professionals pages:
+            Each page fetches the same data but uses different rendering strategies to showcase
+            performance and user experience differences.
           </p>
-          <ul className="text-md space-y-2 text-gray-500">
-            <li>
-              • <strong>Professionals Page 1</strong> - Server-side rendering (SSR)
-            </li>
-            <li>
-              • <strong>Professionals Page 2</strong> - Static site generation (SSG)
-            </li>
-            <li>
-              • <strong>Professionals Page 3</strong> - Client-side rendering (CSR)
-            </li>
-          </ul>
-          <p className="mt-8 text-sm text-gray-400">
-            Each page demonstrates different Next.js data fetching techniques while displaying the
-            same professionals data.
+        </div>
+
+        <div className="space-y-4">
+          {/* SSR Card */}
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="mb-3 flex items-center">
+              <div className="rounded-full bg-blue-100 p-2">
+                <span className="font-semibold text-blue-600">SSR</span>
+              </div>
+              <h3 className="ml-3 text-lg font-semibold text-gray-900">Server-Side Rendering</h3>
+            </div>
+            <p className="mb-3 text-sm text-gray-600">
+              Fresh data on every request. Server renders HTML with up-to-date content.
+            </p>
+            <div className="text-xs text-gray-500">
+              <p>✅ Always fresh data</p>
+              <p>⚡ Good SEO</p>
+              <p>⏱️ Slower initial load</p>
+            </div>
+          </div>
+
+          {/* ISR Card */}
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="mb-3 flex items-center">
+              <div className="rounded-full bg-green-100 p-2">
+                <span className="font-semibold text-green-600">ISR</span>
+              </div>
+              <h3 className="ml-3 text-lg font-semibold text-gray-900">
+                Incremental Static Regeneration
+              </h3>
+            </div>
+            <p className="mb-3 text-sm text-gray-600">
+              Static generation with periodic revalidation (5 minutes). Best of both worlds.
+            </p>
+            <div className="text-xs text-gray-500">
+              <p>⚡ Fast static performance</p>
+              <p>🔄 Periodic fresh data</p>
+              <p>📈 Great SEO</p>
+            </div>
+          </div>
+
+          {/* CSR Card */}
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="mb-3 flex items-center">
+              <div className="rounded-full bg-orange-100 p-2">
+                <span className="font-semibold text-orange-600">CSR</span>
+              </div>
+              <h3 className="ml-3 text-lg font-semibold text-gray-900">Client-Side Rendering</h3>
+            </div>
+            <p className="mb-3 text-sm text-gray-600">
+              Data fetched in browser using React hooks. Interactive and dynamic.
+            </p>
+            <div className="text-xs text-gray-500">
+              <p>🎯 Highly interactive</p>
+              <p>⚡ Fast navigation</p>
+              <p>❌ Poor initial SEO</p>
+            </div>
+          </div>
+
+          {/* PPR Card */}
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="mb-3 flex items-center">
+              <div className="rounded-full bg-purple-100 p-2">
+                <span className="font-semibold text-purple-600">PPR</span>
+              </div>
+              <h3 className="ml-3 text-lg font-semibold text-gray-900">Partial Prerendering</h3>
+            </div>
+            <p className="mb-3 text-sm text-gray-600">
+              Static shell with streaming dynamic content. Instant load + fresh data.
+            </p>
+            <div className="text-xs text-gray-500">
+              <p>🚀 Instant static shell</p>
+              <p>🌊 Streaming dynamic content</p>
+              <p>⭐ Best performance</p>
+            </div>
+          </div>
+
+          {/* Activity Card */}
+          <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="mb-3 flex items-center">
+              <div className="rounded-full bg-pink-100 p-2">
+                <span className="font-semibold text-pink-600">Activity</span>
+              </div>
+              <h3 className="ml-3 text-lg font-semibold text-gray-900">React Activity API</h3>
+            </div>
+            <p className="mb-3 text-sm text-gray-600">
+              Pre-renders page 5 in hidden mode while you're on any other page. Instant activation
+              when you navigate to it.
+            </p>
+            <div className="text-xs text-gray-500">
+              <p>🚀 Pre-rendered content</p>
+              <p>💾 State preservation</p>
+              <p>⚡ Instant activation</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-12 rounded-lg border border-gray-200 bg-gray-50 p-6">
+          <h2 className="mb-4 text-xl font-semibold text-gray-900">🔧 Technical Implementation</h2>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <h3 className="mb-2 font-medium text-gray-800">API Features</h3>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• Enhanced debug logging with method context</li>
+                <li>• Graceful error handling (no crashes)</li>
+                <li>• Flexible Zod schema validation</li>
+                <li>• Configurable caching strategies</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="mb-2 font-medium text-gray-800">Next.js 15 Features</h3>
+              <ul className="space-y-1 text-sm text-gray-600">
+                <li>• Partial Prerendering (experimental)</li>
+                <li>• React Activity API (experimental)</li>
+                <li>• React Server Components</li>
+                <li>• Streaming with Suspense</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-500">
+            Navigate using the sidebar to explore each rendering pattern. The Activity API is
+            pre-rendering page 5 right now in the background!
           </p>
         </div>
       </div>

@@ -16,6 +16,15 @@ const safeNullableNumber = z
   })
   .nullable();
 
+// Helper function to safely handle photo URLs (can be null or valid URL)
+const safePhotoUrl = z
+  .union([z.string().url(), z.string().length(0), z.null()])
+  .transform((val) => {
+    if (val === null || val === undefined || val === '') return null;
+    return val;
+  })
+  .nullable();
+
 // Service schema
 const serviceSchema = z.object({
   id: z.string(),
@@ -30,7 +39,7 @@ const professionalSchema = z.object({
   favorite: z.boolean(),
   email: z.string().email(),
   name: z.string(),
-  photo: z.string().url(),
+  photo: safePhotoUrl, // Now accepts null values
   phoneNumber: z.string(),
   type: z.string(),
   workCardNumber: z.string(),

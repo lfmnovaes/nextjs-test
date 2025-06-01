@@ -22,10 +22,10 @@
     "lucide-react": "0.511.0",
     "neverthrow": "8.2.0",
     "next": "15.4.0-canary.60",
-    "react": "19.2.0-canary-14094f80-20250529",
-    "react-dom": "19.2.0-canary-14094f80-20250529",
+    "react": "19.2.0-canary-f9ae0a4c-20250527",
+    "react-dom": "19.2.0-canary-f9ae0a4c-20250527",
     "tailwind-merge": "3.3.0",
-    "zod": "3.25.43"
+    "zod": "3.25.46"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",

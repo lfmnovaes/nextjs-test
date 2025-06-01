@@ -1,9 +1,9 @@
-import { Provider } from 'jotai';
-
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 
+import { ActivityWrapper } from '@/components/activity-wrapper';
 import { Sidebar } from '@/components/sidebar';
+import { JotaiProvider } from '@/lib/providers';
 
 import './globals.css';
 
@@ -18,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Professionals Management',
-  description: 'A Next.js app for managing professionals data',
+  title: 'Next.js Rendering Patterns Demo',
+  description: 'Demonstrating different Next.js rendering patterns with professionals data',
 };
 
 export default function RootLayout({
@@ -30,12 +30,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Provider>
+        <JotaiProvider>
           <div className="flex h-screen">
             <Sidebar />
-            <main className="min-w-0 flex-1 overflow-hidden">{children}</main>
+            <main className="flex-1 overflow-hidden">
+              <ActivityWrapper>{children}</ActivityWrapper>
+            </main>
           </div>
-        </Provider>
+        </JotaiProvider>
       </body>
     </html>
   );

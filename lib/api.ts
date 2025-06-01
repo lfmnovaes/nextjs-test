@@ -53,9 +53,16 @@ function validateData(data: unknown, method: string = 'unknown') {
 
   if (!validationResult.success) {
     console.error(`[${method}] Data validation failed:`, validationResult.error.issues);
-    return ResultAsync.fromSafePromise(
-      Promise.reject(new Error('Data validation failed. Check console for details.'))
-    );
+
+    // Instead of crashing, return a fallback response with empty data
+    const fallbackResponse: ProfessionalsResponse = {
+      statusCode: 200,
+      message: 'Data validation failed, showing empty results',
+      data: [],
+    };
+
+    console.warn(`[${method}] Returning fallback empty response due to validation errors`);
+    return ResultAsync.fromSafePromise(Promise.resolve(fallbackResponse));
   }
 
   return ResultAsync.fromSafePromise(Promise.resolve(validationResult.data));

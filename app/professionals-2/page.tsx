@@ -10,7 +10,20 @@ export default async function Professionals2() {
   const result = await fetchProfessionalsCached(undefined, 300);
 
   return result.match(
-    (data) => <ProfessionalsTable professionals={data.data} />,
-    (error) => <div className="text-lg text-red-600">Error: {error.message}</div>
+    (data) => (
+      <div>
+        <div className="mb-4 text-sm text-gray-600">
+          <span className="rounded bg-green-100 px-2 py-1 text-green-800">
+            {data.data.length} professionals loaded
+          </span>
+        </div>
+        <ProfessionalsTable professionals={data.data} />
+      </div>
+    ),
+    (error) => (
+      <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-lg text-red-600">
+        Error: {error.message}
+      </div>
+    )
   );
 }
