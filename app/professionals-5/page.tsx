@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { ProfessionalsTable } from '@/components/professionals-table';
 import { fetchProfessionalsClient } from '@/lib/api';
@@ -15,7 +15,7 @@ export default function Professionals5() {
   const lastRenderState = useRef<{ loading: boolean; count: number }>({ loading: true, count: 0 });
 
   // Start loading immediately when component renders (works even when Activity is hidden)
-  if (!hasStartedLoading.current) {
+  if (!hasStartedLoading.current && typeof window !== 'undefined') {
     hasStartedLoading.current = true;
     console.log('[Activity Page] Component rendered, starting data fetch...');
 

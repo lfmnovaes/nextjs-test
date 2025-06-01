@@ -101,8 +101,8 @@ export default function Home() {
               <h3 className="ml-3 text-lg font-semibold text-gray-900">React Activity API</h3>
             </div>
             <p className="mb-3 text-sm text-gray-600">
-              Pre-renders page 5 in hidden mode while you're on any other page. Instant activation
-              when you navigate to it.
+              Pre-renders page 5 in hidden mode while you&apos;re on any other page. Instant
+              activation when you navigate to it.
             </p>
             <div className="text-xs text-gray-500">
               <p>🚀 Pre-rendered content</p>
