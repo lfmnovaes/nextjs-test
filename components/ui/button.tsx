@@ -6,7 +6,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive relative inline-flex shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-md text-sm font-medium whitespace-nowrap transition-all duration-150 outline-none focus-visible:ring-[3px] active:scale-95 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -33,24 +33,112 @@ const buttonVariants = cva(
   }
 );
 
+interface RippleProps {
+  x: number;
+  y: number;
+  variant: string;
+}
+
+function Ripple({ x, y, variant }: RippleProps) {
+  const rippleColor = React.useMemo(() => {
+    switch (variant) {
+      case 'default':
+        return 'bg-primary-foreground/30';
+      case 'destructive':
+        return 'bg-white/30';
+      case 'outline':
+        return 'bg-accent-foreground/20';
+      case 'secondary':
+        return 'bg-secondary-foreground/30';
+      case 'ghost':
+        return 'bg-accent-foreground/20';
+      case 'link':
+        return 'bg-primary/20';
+      default:
+        return 'bg-white/30';
+    }
+  }, [variant]);
+
+  return (
+    <span
+      className={cn('pointer-events-none absolute animate-ping rounded-full', rippleColor)}
+      style={{
+        left: x - 10,
+        top: y - 10,
+        width: 20,
+        height: 20,
+        animationDuration: '600ms',
+        animationIterationCount: 1,
+      }}
+    />
+  );
+}
+
 function Button({
   className,
-  variant,
+  variant = 'default',
   size,
   asChild = false,
+  onClick,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
   }) {
+  const [ripples, setRipples] = React.useState<RippleProps[]>([]);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+  const handleClick = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (buttonRef.current) {
+        const rect = buttonRef.current.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        const newRipple: RippleProps = {
+          x,
+          y,
+          variant: variant || 'default',
+        };
+
+        setRipples((prev) => [...prev, newRipple]);
+
+        // Remove ripple after animation
+        setTimeout(() => {
+          setRipples((prev) => prev.slice(1));
+        }, 600);
+      }
+
+      onClick?.(event);
+    },
+    [onClick, variant]
+  );
+
   const Comp = asChild ? Slot : 'button';
+
+  if (asChild) {
+    return (
+      <Comp
+        data-slot="button"
+        className={cn(buttonVariants({ variant, size, className }))}
+        {...props}
+      />
+    );
+  }
 
   return (
     <Comp
+      ref={buttonRef}
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
+      onClick={handleClick}
       {...props}
-    />
+    >
+      {props.children}
+      {ripples.map((ripple, index) => (
+        <Ripple key={index} {...ripple} />
+      ))}
+    </Comp>
   );
 }
 

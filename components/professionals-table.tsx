@@ -62,7 +62,7 @@ export function ProfessionalsTable({ professionals }: ProfessionalsTableProps) {
               <TableRow key={professional.id}>
                 <TableCell>
                   <Avatar>
-                    <AvatarImage src={professional.photo || undefined} alt={professional.name} />
+                    <AvatarImage src={professional.photo} alt={professional.name} />
                     <AvatarFallback>{professional.name.charAt(0)}</AvatarFallback>
                   </Avatar>
                 </TableCell>

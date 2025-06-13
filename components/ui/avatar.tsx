@@ -4,6 +4,8 @@ import * as AvatarPrimitive from '@radix-ui/react-avatar';
 
 import * as React from 'react';
 
+import Image from 'next/image';
+
 import { cn } from '@/lib/utils';
 
 function Avatar({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Root>) {
@@ -16,11 +18,36 @@ function Avatar({ className, ...props }: React.ComponentProps<typeof AvatarPrimi
   );
 }
 
-function AvatarImage({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
+interface AvatarImageProps extends Omit<React.ComponentProps<typeof AvatarPrimitive.Image>, 'src'> {
+  src?: string | null;
+  alt?: string;
+}
+
+function AvatarImage({ className, src, alt, onLoadingStatusChange, ...props }: AvatarImageProps) {
+  const isValidSrc = src && typeof src === 'string' && src.trim() !== '';
+
+  if (isValidSrc) {
+    return (
+      <Image
+        src={src}
+        alt={alt || ''}
+        fill
+        sizes="64px"
+        quality={95}
+        className={cn('object-cover', className)}
+        onError={() => onLoadingStatusChange?.('error')}
+        onLoad={() => onLoadingStatusChange?.('loaded')}
+      />
+    );
+  }
+
   return (
     <AvatarPrimitive.Image
       data-slot="avatar-image"
       className={cn('size-full object-cover', className)}
+      src={isValidSrc ? src : undefined}
+      alt={alt}
+      onLoadingStatusChange={onLoadingStatusChange}
       {...props}
     />
   );
