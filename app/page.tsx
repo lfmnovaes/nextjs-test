@@ -112,30 +112,6 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-12 rounded-lg border border-gray-200 bg-gray-50 p-6">
-          <h2 className="mb-4 text-xl font-semibold text-gray-900">🔧 Technical Implementation</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <h3 className="mb-2 font-medium text-gray-800">API Features</h3>
-              <ul className="space-y-1 text-sm text-gray-600">
-                <li>• Enhanced debug logging with method context</li>
-                <li>• Graceful error handling (no crashes)</li>
-                <li>• Flexible Zod schema validation</li>
-                <li>• Configurable caching strategies</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="mb-2 font-medium text-gray-800">Next.js 15 Features</h3>
-              <ul className="space-y-1 text-sm text-gray-600">
-                <li>• Partial Prerendering (experimental)</li>
-                <li>• React Activity API (experimental)</li>
-                <li>• React Server Components</li>
-                <li>• Streaming with Suspense</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-500">
             Navigate using the sidebar to explore each rendering pattern. The Activity API is
